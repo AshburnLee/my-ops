@@ -36,7 +36,7 @@
 #   ./run_tests.sh --suite tests/test_weight_loader.py --case test_hf_llama_safetensors_name_map
 #
 set -euo pipefail
-set -x
+# set -x
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "${ROOT_DIR}"

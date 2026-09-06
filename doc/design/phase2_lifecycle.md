@@ -495,16 +495,32 @@ create_engine 一次（按 cfg.max_seq_len / vocab / hidden）
 
 ---
 
-## 6. 并行分支（不改四模块对象模型）
+## 6. 模块 — 量化显存（整模进 Orin；计划）
+
+**目标**：22 层 TinyLlama 权重进 ~3.78GB Orin。先 FP16，不够再 INT8/INT4。
+**账本**：[`../guide/orin_vram_budget.md`](../guide/orin_vram_budget.md)。
+
+~~~
+F32 权重 ~4.4 GB  进不去
+FP16     ~2.2 GB  先试（HF 磁盘常为 BF16，加载转 FP16）
+INT4     ~0.55 GB 仅当 FP16 整模仍 OOM
+~~~
+
+**顺序**：显存探针 -> 图纸 dtype -> FP16 路径（保留 F32 回归）-> 22 层试跑 -> 必要时再量化。
+清单见 roadmap 模块 6。
+
+---
+
+## 7. 并行分支（不改四模块对象模型）
 
 - **MoE FFN**：替换 Model 内 layer FFN 路径
 - **热路径性能**：BufferPool、CUDA Graph、profiling（见 opt-roadmap）
-- **落地模块 6**：量化显存（FP16 / INT4）；模块 5 Tokenizer 见上节
+- **落地模块 6**：量化显存（上节）；模块 5 Tokenizer 已收口
 - **Phase 3**：batching、Paged KV、Radix cache
 
 ---
 
-## 7. 实现顺序（模块骨架 -> 细节）
+## 8. 实现顺序（模块骨架 -> 细节）
 
 1. **WeightLoader** — fixture（可并行起步）
 2. **TransformerModel** — 容器 + embed/lm_head + fixture H2D 拷贝
@@ -512,7 +528,7 @@ create_engine 一次（按 cfg.max_seq_len / vocab / hidden）
 4. **Sampler / GenerateLoop** — 闭合 token 环
 5. **WeightLoader** — safetensors（1 只读格式 -> 2 fixture roundtrip -> 3 HF 名映射 -> 4 真模型验证）
 6. **落地模块 5**：Tokenizer（文本进出；已收口）
-7. **落地模块 6**：量化显存（整模进 Orin）
+7. **落地模块 6**：显存账 / 探针 -> FP16 整模 -> 必要时更深量化
 8. **并行**：MoE、Graph
 
-**API 契约**：[`../guide/inference_engine_device_api.md`](../guide/inference_engine_device_api.md)；文本入口 [`../guide/tokenizer_api.md`](../guide/tokenizer_api.md)。
+**API 契约**：[`../guide/inference_engine_device_api.md`](../guide/inference_engine_device_api.md)；文本入口 [`../guide/tokenizer_api.md`](../guide/tokenizer_api.md)；显存账 [`../guide/orin_vram_budget.md`](../guide/orin_vram_budget.md)。

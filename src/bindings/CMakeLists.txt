@@ -462,6 +462,31 @@ target_link_libraries(weight_loader_me PRIVATE
 
 set_python_module_props(weight_loader_me)
 
+add_library(vram_probe_me MODULE
+  vram_probe_binding.cpp
+  $<TARGET_OBJECTS:vram_probe_model>
+)
+
+target_link_libraries(vram_probe_me PRIVATE
+  pybind11::module
+  ${Python3_LIBRARIES}
+  CUDA::cudart
+)
+
+set_python_module_props(vram_probe_me)
+
+add_library(freq_probe_me MODULE
+  freq_probe_binding.cpp
+  $<TARGET_OBJECTS:freq_probe_model>
+)
+
+target_link_libraries(freq_probe_me PRIVATE
+  pybind11::module
+  ${Python3_LIBRARIES}
+)
+
+set_python_module_props(freq_probe_me)
+
 add_library(transformer_model_me MODULE
   transformer_model_binding.cpp
   $<TARGET_OBJECTS:transformer_model>
@@ -572,6 +597,8 @@ if(CMAKE_BUILD_TYPE MATCHES "Debug")
             fa_dst_unpack_me
             transformer_runner_me
             weight_loader_me
+            vram_probe_me
+            freq_probe_me
             transformer_model_me
             inference_engine_me
             generate_loop_me)

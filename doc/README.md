@@ -35,6 +35,8 @@ API 契约、算子 device API、集成数据流、walkthrough 示例。
 | [understand_safetensors.md](guide/understand_safetensors.md) | 读本地 HF checkpoint：config.json；safetensors 为何 safe、文件三截宏观切片 |
 | [generate_loop_device_api.md](guide/generate_loop_device_api.md) | GenerateLoop + Sampler（CUDA top-k/top-p/temperature）；NVTX 树 |
 | [tokenizer_api.md](guide/tokenizer_api.md) | 引擎外 Tokenizer：encode / decode / generate_text（Python） |
+| [orin_vram_budget.md](guide/orin_vram_budget.md) | Orin 显存账 + `vram_probe_me` 探针 API |
+| [freq_probe.md](guide/freq_probe.md) | CPU/GPU 实时频率 vs max（`freq_probe_me`，可与 vram 一起打点） |
 | [sampler-temperature.md](guide/sampler-temperature.md) | Sampler temperature：控制什么、为何需要、与 top_k 关系 |
 | [sampler-top-p.md](guide/sampler-top-p.md) | Sampler top-p（nucleus）：在干什么、与 top_k/temperature 组合 |
 
